@@ -2,7 +2,7 @@
 
 To install the package you need to run next command in your terminal:
 ``` bash
-composer require moofik/laravel-resource-extensions
+composer require moofik/laravel-resources-extensions
 ```
 ## FEATURES
 ### 1) Arbitraty resource constructor params (while using ResourceCollection)

@@ -30,6 +30,5 @@
     "psr-4": {
       "Moofik\\LaravelResourceExtenstion\\": "src"
     }
-  },
-  "minimum-stability": "dev"
+  }
 }
