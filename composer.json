@@ -1,0 +1,35 @@
+{
+  "name": "moofik/laravel-resources-extensions",
+  "description": "This package provide new resource classes and helper traits which will extent standard abilities of Laravel resources",
+  "keywords": [
+    "moofik",
+    "laravel",
+    "resource",
+    "resources",
+    "api",
+    "api-resources"
+  ],
+  "homepage": "https://github.com/moofik/laravel-resource-extensions",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alexander Orlovsky",
+      "email": "moofik12@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "illuminate/container": "^5.8|^6.0|^7.0",
+    "illuminate/contracts": "^5.8|^6.0|^7.0",
+    "illuminate/database": "^5.8|^6.0|^7.0",
+    "illuminate/pagination": "^5.8|^6.0|^7.0",
+    "illuminate/http": "^5.8|^6.0|^7.0",
+    "illuminate/support": "^5.8|^6.0|^7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Moofik\\LaravelResourceExtenstion\\": "src"
+    }
+  },
+  "minimum-stability": "dev"
+}
