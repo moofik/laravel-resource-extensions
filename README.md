@@ -74,11 +74,10 @@ class RepairRequestController
 }
 ```
 
-<strong>Note: if we pass some another arguments to the RepairRequestResourceCollection constructor after the ones we needed, this argumenets could be accesible inside our resource collection via 
+Note: if we pass some another arguments to the RepairRequestResourceCollection constructor after the ones we needed, this arguments could be accessible inside our resource collection via 
 ```php
 $this->args;
 ```
-<strong>
 
 ### 2) Resource policies
 <p>If you need somehow to force underlying resource model to hide or show some of its fields depending on some sophisticated behaviour we can use resource policies. For example we want to show some resource fields if user has specific role (it may be any condition, you are not somehow restricted in policy logic):
@@ -127,10 +126,10 @@ class RepairRequestPolicy extends ResourcePolicy
 ```
 Now, if we use this policy, it will hide description, city and details fields if user has no "Workshop" role. So, let's use it. To use it we need our resource class extends
 ```php
-\Moofik\LaravelResourceExtenstion\Extension\RestrictableResource
+use const Moofik\LaravelResourceExtenstion\Extension\RestrictableResource;RestrictableResource
 ```
 
-After that, our collection obtain two new methods. First (and we need it now) is "applyPolicy" which return policy itself, so that we can use chaining or return it directly from controller method. Let do some code. Here our new resource:
+After that, our collection obtain two new methods. First (and we need it now) is "applyPolicy" which return resource itself, so that we can use chaining or return it directly from controller method. Let do some code. Here our new resource:
 
 ```php
 use Moofik\LaravelResourceExtenstion\Extension\RestrictableResource;
@@ -233,10 +232,11 @@ class RepairRequestWorkshopTransformer extends ResourceTransformer
 ```
 Now, if we use this transformer, it will postprocess our resource data (it will happen after Laravel calls toArray method of resource). So, let's use it. To use it we need our resource class extends
 ```php
-\Moofik\LaravelResourceExtenstion\Extension\RestrictableResource
+Moofik\LaravelResourceExtenstion\Extension\RestrictableResource;
 ```
-
-As we said earlier, our collection obtain two new methods. Method that we will use now is "applyTransformer" which return policy itself, so that we can use chaining or return it directly from controller method. Let do some code. Here our "old friend", the resource, which as earlier extends RestrictableResource in order to use transformers feature:
+class.
+<br>
+As we said earlier, our collection obtain two new methods. Method that we will use now is "applyTransformer" which return resource itself, so that we can use chaining or return it directly from controller method. Let do some code. Here our "old friend", the resource, which as earlier extends RestrictableResource in order to use transformers feature:
 
 ```php
 use Moofik\LaravelResourceExtenstion\Extension\RestrictableResource;
@@ -265,7 +265,7 @@ class RepairRequest extends RestrictableResource
 }
 ```
 
-By the way, we also can use transformers with ExtendableResourceCollection subclasses (see 1.) In that case policy will be applied to every underlying resource of RestrictableResource subclass. Below is how we use it inside controller methods:
+By the way, we also can use transformers with ExtendableResourceCollection subclasses (see 1.) In that case transformer will be applied to every underlying resource of RestrictableResource subclass. Below is how we use it inside controller methods:
 ```php
 public function allRequests(Guard $guard, RepairOffersRepository $repairOfferRepository)
  {
@@ -299,10 +299,18 @@ public function allRequests(Guard $guard, RepairOffersRepository $repairOfferRep
 use Moofik\LaravelResourceExtenstions\Extension\ErrorInspectionHelpers;
 ```
 <br>
-The ErrorInspectionHelpers trait methods are listed below:<br><br>
-<b>ErrorInspectionHelpers::throwIfResourceIsNot(string $expectedClass)</b> -it will throw InvalidArgumentException if resource is not of class $expectedClass.<br><br>
-<b>ErrorInspectionHelpers::throwIfNot($instance, string $expectedClass)</b> -it will throw InvalidArgumentException if passed instance object is not of class $expectedClass.<br><br>
-<b>public function throwIfNotAnyOf($instance, array $expectedClasses)</b> -it will throw InvalidArgumentException if passed instance object is not any of classes presented in $expectedClassed array.<br><br>
+The ErrorInspectionHelpers trait methods are listed below:
+<p>
+
+```php
+public function throwIfResourceIsNot(string $expectedClass); // it will throw InvalidArgumentException if resource is not of class $expectedClass
+
+public function throwIfNot($instance, string $expectedClass); // it will throw InvalidArgumentException if passed instance object is not of class $expectedClass
+
+public function throwIfNotAnyOf(string $expectedClass); // it will throw InvalidArgumentException if passed instance object is not any of classes presented in $expectedClassed array
+```
+<br>
+
 </p>
 
 ### 5) Additional functionality (unstable in beta) - HasActiveFlag trait
