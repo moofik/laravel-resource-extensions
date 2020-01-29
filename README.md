@@ -124,12 +124,12 @@ class RepairRequestPolicy extends ResourcePolicy
     }
 }
 ```
-Now, if we use this policy, it will hide description, city and details fields if user has no "Workshop" role. So, let's use it. To use it we need our resource class extends
+Now, if we use this policy, it will hide description, city and details fields if user has no "Workshop" role. So, let's use it. To use it we need our resource class to extend
 ```php
-use const Moofik\LaravelResourceExtenstion\Extension\RestrictableResource;RestrictableResource
+Moofik\LaravelResourceExtenstion\Extension\RestrictableResource;
 ```
 
-After that, our collection obtain two new methods. First (and we need it now) is "applyPolicy" which return resource itself, so that we can use chaining or return it directly from controller method. Let do some code. Here our new resource:
+After that, our collection will obtain two new methods. First (and we need it now) is "applyPolicy" which return resource itself, so that we can use chaining or return it directly from controller method. Let do some code. Here our new resource:
 
 ```php
 use Moofik\LaravelResourceExtenstion\Extension\RestrictableResource;
