@@ -18,73 +18,75 @@ trait HasActiveFlag
     /**
      * @var array
      */
-    private $activeResource = [];
-
+    private $flaggedResult = [];
+    
     /**
-     * @var array
+     * @var bool
      */
-    private $inactiveResource = [];
+    private $flagCollection = false;
 
     /**
      * @var bool
      */
-    private $attachActiveFlagCalled = false;
+    private $onlyTrueFlaggedResources = false;
 
     /**
      * @var bool
      */
-    private $onlyActiveResourcesCalled = false;
+    private $onlyFalseFlaggedResources = false;
 
     /**
-     * @var bool
+     * @var string
      */
-    private $onlyInactiveResourcesCalled = false;
+    private $flagName;
 
     /**
-     * @param  Collection  $activeItems
-     * @param  Collection  $allItems
+     * @param Collection $activeItems
+     * @param Collection $allItems
+     * @param string $flagName
      * @return Collection
      */
-    public function attachActiveFlag(Collection $activeItems, Collection $allItems)
+    public function flagCollection(Collection $activeItems, Collection $allItems, string $flagName = 'active'): Collection
     {
-        $active = $activeItems->intersect($allItems);
-        $passive = $allItems->diff($activeItems);
+        $trueFlagged = $activeItems->intersect($allItems);
+        $falseFlagged = $allItems->diff($activeItems);
+        $this->flagName = $flagName;
 
-        $active->map(function (Model $item) {
-            $item['active'] = true;
+        $trueFlagged->map(function (Model $item) use ($flagName) {
+            $item[$flagName] = true;
         });
 
-        $passive->map(function (Model $item) {
-            $item['active'] = false;
+        $falseFlagged->map(function (Model $item) use ($flagName) {
+            $item[$flagName] = false;
         });
 
-        $this->activeResource = $active;
-        $this->inactiveResource = $passive;
-        $this->attachActiveFlagCalled = true;
+        $this->flagCollection = true;
+        $this->flaggedResult = $trueFlagged->merge($falseFlagged);
 
-        if ($this->onlyActiveResourcesCalled) {
-            return $active;
+        if ($this->onlyTrueFlaggedResources) {
+            return $this->flaggedResult->where($flagName, true);
         }
 
-        if ($this->onlyInactiveResourcesCalled) {
-            return $passive;
+        if ($this->onlyFalseFlaggedResources) {
+            return $this->flaggedResult->where($flagName, false);
         }
 
-        return $active->merge($passive);
+        return $this->flaggedResult;
     }
 
     /**
-     * Restricts result collection to resource models with true "active" flag.
+     * Restricts result collection to resource models with true flag.
      * It can be used either before or after "attachActiveFlag" method - it doesn't affect final result.
      *
-     * @return JsonResource|ResourceCollection|HasActiveFlag
+     * @return static
      */
-    public function onlyActiveResources(): JsonResource
+    public function onlyTrueFlagged(): self
     {
-        if ($this->attachActiveFlagCalled) {
-            $this->collection = new Collection($this->activeResource);
+        if ($this->flagCollection) {
+            $data = $this->flaggedResult->where($this->flagName, true);
+            $this->collection = new Collection($data);
         } else {
-            $this->onlyActiveResourcesCalled = true;
+            $this->onlyTrueFlaggedResources = true;
         }
 
 
@@ -92,17 +94,18 @@ trait HasActiveFlag
     }
 
     /**
-     * Restricts result collection to resource models with false "active" flag
-     * It can be used either before or after "attachActiveFlag" method - it doesn't affect final result.
+     * Restricts result collection to resource models with false flag
+     * It can be used either before or after "flagCollection" method - it doesn't affect final result.
      *
-     * @return JsonResource|ResourceCollection|HasActiveFlag
+     * @return static
      */
-    public function onlyInactiveResources(): JsonResource
+    public function onlyFalseFlagged(): self
     {
-        if ($this->attachActiveFlagCalled) {
-            $this->collection = new Collection($this->inactiveResource);
+        if ($this->flagCollection) {
+            $data = $this->flaggedResult->where($this->flagName, false);
+            $this->collection = new Collection($data);
         } else {
-            $this->onlyInactiveResourcesCalled = true;
+            $this->onlyFalseFlaggedResources = true;
         }
 
 

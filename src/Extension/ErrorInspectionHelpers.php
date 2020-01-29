@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Moofik\LaravelResourceExtenstions\Extension;
+namespace Moofik\LaravelResourceExtenstion\Extension;
 
 
 use Illuminate\Http\Resources\Json\JsonResource;
