@@ -4,10 +4,10 @@
 namespace Moofik\LaravelResourceExtenstion\Extension;
 
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * Trait HasActiveFlag
@@ -19,7 +19,7 @@ trait HasActiveFlag
      * @var array
      */
     private $flaggedResult = [];
-    
+
     /**
      * @var bool
      */
@@ -52,11 +52,11 @@ trait HasActiveFlag
         $falseFlagged = $allItems->diff($activeItems);
         $this->flagName = $flagName;
 
-        $trueFlagged->map(function (Model $item) use ($flagName) {
+        $trueFlagged->each(function (Model $item) use ($flagName) {
             $item[$flagName] = true;
         });
 
-        $falseFlagged->map(function (Model $item) use ($flagName) {
+        $falseFlagged->each(function (Model $item) use ($flagName) {
             $item[$flagName] = false;
         });
 
