@@ -4,23 +4,21 @@
 namespace Moofik\LaravelResourceExtenstion\Extension;
 
 
-use Moofik\LaravelResourceExtenstion\Policy\UsesPolicy;
-use Moofik\LaravelResourceExtenstion\Transformer\UsesTransformer;
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Moofik\LaravelResourceExtenstion\Pipeline\UsesExtensionPipeline;
+use Moofik\LaravelResourceExtenstion\Policy\UsesPolicy;
+use Moofik\LaravelResourceExtenstion\Transformer\UsesTransformer;
 
 abstract class RestrictableResource extends JsonResource
 {
-    use UsesPolicy, UsesTransformer;
+    use UsesPolicy, UsesTransformer, UsesExtensionPipeline;
 
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      */
     public function toArray($request)
@@ -41,33 +39,37 @@ abstract class RestrictableResource extends JsonResource
     /**
      * Resolve resource policy
      */
-    protected function resolvePolicy()
+    private function resolvePolicy()
     {
-        if (empty($this->policy)) {
+        if (empty($this->policies)) {
             return;
         }
 
-        if (is_array($this->resource)) {
-            foreach ($this->resource as $singleResource) {
-                if ($singleResource instanceof Model) {
-                    $singleResource->setHidden($this->policy->getHiddenFields($singleResource));
-                    $singleResource->setVisible($this->policy->getVisibleFields($singleResource));
+        foreach ($this->policies as $policy) {
+            if (is_array($this->resource)) {
+                foreach ($this->resource as $singleResource) {
+                    if ($singleResource instanceof Model) {
+                        $singleResource->makeHidden($policy->getHiddenFields($singleResource));
+                        $singleResource->makeVisible($policy->getVisibleFields($singleResource));
+                    }
                 }
+            } elseif ($this->resource instanceof Model) {
+                $this->resource->makeHidden($policy->getHiddenFields($this->resource));
+                $this->resource->makeVisible($policy->getVisibleFields($this->resource));
             }
-        } elseif ($this->resource instanceof Model) {
-            $this->resource->setHidden($this->policy->getHiddenFields($this->resource));
-            $this->resource->setVisible($this->policy->getVisibleFields($this->resource));
         }
     }
 
     /**
-     * @param  array  $data
+     * Resolve resource transformations
+     *
+     * @param array $data
      * @return array
      */
     private function resolveTransformation(array $data): array
     {
-        if ($this->transformer) {
-            return $this->transformer->transform($this->resource, $data);
+        foreach ($this->transformers as $transformer) {
+            $data = $transformer->transform($this->resource, $data);
         }
 
         return $data;

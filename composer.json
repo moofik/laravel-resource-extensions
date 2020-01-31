@@ -28,7 +28,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Moofik\\LaravelResourceExtenstion\\": "src"
+      "Moofik\\LaravelResourceExtenstion\\": "src",
+      "Moofik\\LaravelResourceExtenstion\\Tests\\": "tests"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5"
+  },
+  "scripts": {
+    "test": "phpunit"
   }
 }

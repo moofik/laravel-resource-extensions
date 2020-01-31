@@ -7,9 +7,9 @@ namespace Moofik\LaravelResourceExtenstion\Transformer;
 trait UsesTransformer
 {
     /**
-     * @var ResourceTransformer
+     * @var ResourceTransformer[]
      */
-    private $transformer;
+    private $transformers = [];
 
     /**
      * @param  ResourceTransformer  $transformer
@@ -17,7 +17,7 @@ trait UsesTransformer
      */
     public function applyTransformer(ResourceTransformer $transformer): self
     {
-        $this->transformer = $transformer;
+        $this->transformers[] = $transformer;
 
         return $this;
     }

@@ -7,9 +7,9 @@ namespace Moofik\LaravelResourceExtenstion\Policy;
 trait UsesPolicy
 {
     /**
-     * @var ResourcePolicy
+     * @var ResourcePolicy[]
      */
-    private $policy;
+    private $policies = [];
 
     /**
      * @param  ResourcePolicy  $policy
@@ -18,7 +18,7 @@ trait UsesPolicy
      */
     public function applyPolicy(ResourcePolicy $policy): self
     {
-        $this->policy = $policy;
+        $this->policies[] = $policy;
 
         return $this;
     }
