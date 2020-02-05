@@ -20,9 +20,15 @@ trait ErrorInspectionHelpers
     public function throwIfResourceIsNot(string $expectedClass)
     {
         if (!$this->resource instanceof $expectedClass) {
+            if (!isset($this->resource)) {
+                $actual = 'NULL';
+            } else {
+                $actual = get_class($this->resource);
+            }
+
             throw new InvalidArgumentException(
                 get_class($this),
-                get_class($this->resource),
+                $actual,
                 $expectedClass
             );
         }
@@ -34,10 +40,16 @@ trait ErrorInspectionHelpers
      */
     public function throwIfNot($instance, string $expectedClass)
     {
+        if (!isset($this->resource)) {
+            $actual = 'NULL';
+        } else {
+            $actual = get_class($this->resource);
+        }
+
         if (!$instance instanceof $expectedClass) {
             throw new InvalidArgumentException(
                 get_class($this),
-                get_class($instance),
+                $actual,
                 $expectedClass
             );
         }
