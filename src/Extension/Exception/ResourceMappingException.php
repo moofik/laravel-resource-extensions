@@ -1,10 +1,12 @@
 <?php
 
 
-namespace Moofik\LaravelResourceExtenstions\Extension\Exception;
+namespace Moofik\LaravelResourceExtenstion\Extension\Exception;
 
 
-class ResourceMappingException extends \RuntimeException
+use RuntimeException;
+
+class ResourceMappingException extends RuntimeException
 {
 
 }

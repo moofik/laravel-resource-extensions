@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Resources\MissingValue;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Collection;
+use Moofik\LaravelResourceExtenstion\Extension\Exception\ResourceMappingException;
 use Moofik\LaravelResourceExtenstion\Pipeline\UsesExtensionPipeline;
 use Moofik\LaravelResourceExtenstion\Policy\UsesPolicy;
 use Moofik\LaravelResourceExtenstion\Transformer\UsesTransformer;

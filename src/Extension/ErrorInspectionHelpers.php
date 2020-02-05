@@ -4,9 +4,8 @@
 namespace Moofik\LaravelResourceExtenstion\Extension;
 
 
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Moofik\LaravelResourceExtenstions\Extension\Exception\InvalidArgumentException;
+use Moofik\LaravelResourceExtenstion\Extension\Exception\InvalidArgumentException;
+use Throwable;
 
 /**
  * Trait ErrorInspectionHelpers
@@ -56,7 +55,7 @@ trait ErrorInspectionHelpers
         foreach ($expectedClasses as $expectedClass) {
             try {
                 $this->throwIfNot($instance, $expectedClass);
-            } catch (\Throwable $exception) {
+            } catch (Throwable $exception) {
                 $expectedClassesList = ' nor ' . $expectedClass;
                 $times++;
             }
