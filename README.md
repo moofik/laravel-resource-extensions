@@ -54,11 +54,13 @@ class RepairRequestResourceCollection extends ExtendableResourceCollection
 {
     public function toArray($request)
     {
+        $result = parent::toArray($request);
+
         /*
-         * Maybe some arbitrary but needful actions here
+         * Maybe some arbitrary but needful actions on $result here
          */ 
         
-        return parent::toArray($request);
+        return $result;
     }
 }
 ```
@@ -158,6 +160,7 @@ class RepairRequestResource extends RestrictableResource
      */
     public function toArray($request)
     {
+        /* If you want policies to work you should use either parent::toArray() or directly call $this->resolvePolicies() */  
         return parent::toArray($request);
     }
 }
@@ -166,32 +169,37 @@ class RepairRequestResource extends RestrictableResource
 After that, our collection will obtain three new methods. First (and we need it now) is "applyPolicy" which return resource itself, so that we can use chaining or return its result directly from controller method. 
 We also can use policies with ExtendableResourceCollection subclasses (see 1.) In that case policy will be applied to every underlying resource of RestrictableResource subclass. Below is how we can use it inside controller methods:
 ```php
-public function allRequests(Guard $guard, RepairOffersRepository $repairOfferRepository)
- {
-    /** @var User $user */
-    $user = $guard->user();
-    $repairRequests = RepairRequest::paginate();
-
-    $resource = new RepairRequestResourceCollection($repairRequests, $repairOfferRepository);
-    $resourcePolicy = new RepairRequestPolicy($user);
-
-    return $resource->applyPolicy($resourcePolicy);
- }
- 
- public function oneRequest(int $id, Guard $guard, RepairOffersRepository $repairOfferRepository)
- {
-    /** @var User $user */
-    $user = $guard->user();
-    $repairRequest = RepairRequest::find($id);
-
-    $resource = new RepairRequestResource($repairRequest, $repairOfferRepository);
-    $resourcePolicy = new RepairRequestPolicy($user);
-
-    return $resource->applyPolicy($resourcePolicy);
- }
+class RepairRequestController
+{
+     public function allRequests(Guard $guard, RepairOffersRepository $repairOfferRepository)
+     {
+        /** @var User $user */
+        $user = $guard->user();
+        $repairRequests = RepairRequest::paginate();
+    
+        $resource = new RepairRequestResourceCollection($repairRequests, $repairOfferRepository);
+        $resourcePolicy = new RepairRequestPolicy($user);
+    
+        return $resource->applyPolicy($resourcePolicy);
+     }
+     
+     public function oneRequest(int $id, Guard $guard, RepairOffersRepository $repairOfferRepository)
+     {
+        /** @var User $user */
+        $user = $guard->user();
+        $repairRequest = RepairRequest::find($id);
+    
+        $resource = new RepairRequestResource($repairRequest, $repairOfferRepository);
+        $resourcePolicy = new RepairRequestPolicy($user);
+    
+        return $resource->applyPolicy($resourcePolicy);
+     }
+}
 ```
 
-Note: You can apply multiple policies to one API resource, but be careful. Order matters. Order of running policies on API resource is the same as an order of applying that policies to that resource,
+Notes:
+ 1) You can apply multiple policies to one API resource, but be careful. Order matters. Order of running policies on API resource is the same as an order of applying that policies to that resource.
+ 2) <b>You MUST either call ```parent::toArray($request)``` or directly call ```$this->resolvePolicies()```  inside toArray() method of your resource to resource policies to work</b>
 #### 3) Resource transformers
 <p>If you need somehow to postprocess resulting array of data either for resource or resource collection you can use resource transformers. Imagine we want to attach "is_offer_made" flag to the resulting resource array, based on simple idea "whether user make offer for given repair request": if offer have been made we set flag to true, and false otherwise.
 </p>
@@ -302,8 +310,9 @@ class SomeController
     }
 }
 ```
-Note: You also can apply multiple transformers to one API resource, but be careful. Order matters. Order of running transformers on API resource is the same as an order of applying that transformers to that resource.
-
+Notes:
+ 1) You also can apply multiple transformers to one API resource, but be careful. Order matters. Order of running transformers on API resource is the same as an order of applying that transformers to that resource.
+ 2) <b>You MUST either call ```parent::toArray($request)``` or directly call ```$this->resolveTransformation($data)``` (where data is array that you want to pass to your transformers ```transform($resource, array $data)``` method) inside toArray() method of your resource to resource transformers to work</b>
 #### 4) Error inspection helpers
 <p>This small package has a couple of error inspection helper methods to use inside your resources which are convenient in some cases. To use them just add next trait to your class
 

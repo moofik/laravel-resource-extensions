@@ -39,7 +39,7 @@ abstract class RestrictableResource extends JsonResource
     /**
      * Resolve resource policy
      */
-    private function resolvePolicy()
+    protected function resolvePolicy()
     {
         if (empty($this->policies)) {
             return;
@@ -66,7 +66,7 @@ abstract class RestrictableResource extends JsonResource
      * @param array $data
      * @return array
      */
-    private function resolveTransformation(array $data): array
+    protected function resolveTransformation(array $data): array
     {
         foreach ($this->transformers as $transformer) {
             $data = $transformer->transform($this->resource, $data);
