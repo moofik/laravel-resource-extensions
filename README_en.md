@@ -1,4 +1,4 @@
-## Содержание
+## Contents
 1) [Installation](#installation)
 2) [Testing](#testing)
 3) [API Resource Collection underlying resource dependency injection](#api-resource-collection-underlying-resource-dependency-injection)
