@@ -5,12 +5,11 @@ namespace Moofik\LaravelResourceExtenstion\Extension;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Collection;
 
 /**
  * Trait HasActiveFlag
+ * @deprecated
  * @package Moofik\LaravelResourceExtenstion\Extension
  */
 trait HasActiveFlag
@@ -46,7 +45,7 @@ trait HasActiveFlag
      * @param string $flagName
      * @return Collection
      */
-    public function flagCollection(Collection $activeItems, Collection $allItems, string $flagName = 'active'): Collection
+    public function flagCollection(Collection $activeItems, Collection $allItems, string $flagName): Collection
     {
         $trueFlagged = $activeItems->intersect($allItems);
         $falseFlagged = $allItems->diff($activeItems);

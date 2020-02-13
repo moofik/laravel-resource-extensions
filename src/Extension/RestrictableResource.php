@@ -11,7 +11,7 @@ use Moofik\LaravelResourceExtenstion\Pipeline\UsesExtensionPipeline;
 use Moofik\LaravelResourceExtenstion\Policy\UsesPolicy;
 use Moofik\LaravelResourceExtenstion\Transformer\UsesTransformer;
 
-abstract class RestrictableResource extends JsonResource
+class RestrictableResource extends JsonResource
 {
     use UsesPolicy, UsesTransformer, UsesExtensionPipeline;
 

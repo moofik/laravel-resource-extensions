@@ -17,9 +17,14 @@ use Moofik\LaravelResourceExtenstion\Transformer\UsesTransformer;
 use ReflectionClass;
 use ReflectionException;
 
-abstract class ExtendableResourceCollection extends ResourceCollection
+class ExtendableResourceCollection extends ResourceCollection
 {
     use UsesPolicy, UsesTransformer, UsesExtensionPipeline;
+
+    /**
+     * @var string|null
+     */
+    protected $underlyingResourceClass = null;
 
     /**
      * @var array
@@ -56,9 +61,13 @@ abstract class ExtendableResourceCollection extends ResourceCollection
             $resource = new Collection($resource);
         }
 
-        $classToCollect = $this->collects();
+        if (isset($this->underlyingResourceClass)) {
+            $classToCollect = $this->underlyingResourceClass;
+        } else {
+            $classToCollect = $this->collects();
+        }
 
-        $this->collection = $classToCollect && ! $resource->first() instanceof $classToCollect
+        $this->collection = $classToCollect && !$resource->first() instanceof $classToCollect
             ? $this->mapIntoResourceCollection($classToCollect, $resource)
             : $resource->toBase();
 
@@ -119,5 +128,19 @@ abstract class ExtendableResourceCollection extends ResourceCollection
         }
 
         return parent::toArray($request);
+    }
+
+    /**
+     * @param $resource
+     * @param string $class
+     * @param array $args
+     * @return $this
+     */
+    public static function extendableCollection($resource, string $class, ...$args): ExtendableResourceCollection
+    {
+        $collection = new AnonymousResourceCollection($resource, $args);
+        $collection->setUnderlyingResource($class);
+
+        return $collection;
     }
 }
