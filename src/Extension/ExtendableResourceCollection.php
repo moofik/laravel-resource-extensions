@@ -136,7 +136,7 @@ class ExtendableResourceCollection extends ResourceCollection
      * @param array $args
      * @return $this
      */
-    public static function extendableCollection($resource, string $class, ...$args): ExtendableResourceCollection
+    public static function extendableCollection($resource, string $class = RestrictableResource::class, ...$args): ExtendableResourceCollection
     {
         $collection = new AnonymousResourceCollection($resource, $args);
         $collection->setUnderlyingResource($class);
